@@ -1,6 +1,6 @@
 NAME = philo
 
-SRCS =  init.c main.c ft_atoi.c ft_get_time.c
+SRCS =  init.c main.c ft_atoi.c ft_get_time.c print.c
 
 HEADER = philo.h 
 
