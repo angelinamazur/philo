@@ -6,23 +6,12 @@
 /*   By: ptoshiko <ptoshiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/30 15:36:26 by ptoshiko          #+#    #+#             */
-/*   Updated: 2022/07/02 21:11:55 by ptoshiko         ###   ########.fr       */
+/*   Updated: 2022/07/03 21:44:34 by ptoshiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <stdio.h>
-
-// int is_died(t_philo philo)
-// {
-// 	// calculate time 
-// }
-
-// void *ft_test(void *data)
-// {
-// 	printf("hi");
-// 	return(0);
-// }
 
 void	ft_usleep(int time_to_wait)
 {
@@ -33,86 +22,103 @@ void	ft_usleep(int time_to_wait)
 		usleep(100);
 }
 
-
-
 void *ft_philo(void *data) // pointer to one elem 
 {
-	printf("here1");
-
 	t_philo	*philo;
 	philo = (t_philo *)data;
-	printf("times %d\n", philo->env->times_to_eat_each);
-
-
-	// printf("id: %d", philo->id);
-
-	// philo->meals < philo->env->times_to_eat_each || 
-
 	if (philo->id % 2 == 1)
 		ft_usleep(50);
-	// while (philo->env->times_to_eat_each)
-	
-	// while(philo->meals < philo->env->times_to_eat_each || philo->env->times_to_eat_each == -1)
-	while(1)
+	while(philo->meals < philo->env->times_to_eat_each || philo->env->times_to_eat_each == -1)
 	{
-		// printf("id philo %d", philo->id);
-		// printf("fork");
-		printf("philo %d wants %p\n", philo->id, philo->left);
 		pthread_mutex_lock(philo->left);
+		if (philo->signal == 1)
+			return 0;
 		print_info(philo, "has taken a fork");
-		printf("philo %d wants %p\n", philo->id, philo->right);
+		if (philo->env->number == 1)
+		{
+			return (NULL);
+		}
 		pthread_mutex_lock (philo->right);
+		if (philo->signal == 1)
+			return 0;
 		print_info(philo, "has taken a fork");
 		philo->last_eating = get_time();
+		if (philo->signal == 1)
+			return 0;
 		print_info(philo, "is eating");
-		printf("eat-time %d\n", philo->env->time_to_eat);
 		ft_usleep(philo->env->time_to_eat);
-		// printf("eat-time %d\n", philo->env->time_to_eat);
-		
-		printf("philo %d down %p\n", philo->id, philo->left);
 		pthread_mutex_unlock(philo->left);
-		printf("philo %d down %p\n", philo->id, philo->right);
 		pthread_mutex_unlock (philo->right);
+		if (philo->signal == 1)
+			return 0;
 		print_info(philo, "is sleeping");
 		ft_usleep(philo->env->time_to_sleep);
+		if (philo->signal == 1)
+			return 0;
 		print_info(philo, "is sleeping");
 		philo->meals++;
 	}
 	return (0);
 }
 
+void * ft_monitor (void *data)
+{
+	t_env	*env;
+	env = (t_env *)data;
+	int i;
+	int j;
+	i = 0;
+
+	// if (env->number == 1)
+	// {
+	// 	usleep(7000);
+	// 	printf("%d 1 died", env->time_to_die);
+	// 	env->philo[0].signal = 1;
+	// 	return (NULL);
+	// }
+	while (1)
+	{
+		if(env->philo[i].last_eating && get_time() - env->philo[i].last_eating > (unsigned long)env->time_to_die)
+		{
+			print_info(&env->philo[i], "died");
+			j = 0;
+			while(j < env->number)
+			{
+				env->philo[j].signal = 1;
+				j++;
+			}
+			return (NULL);
+		}
+		i++;
+		if (i == env->number)
+			i = 0;	
+	}
+}
+
 void simulation(t_env *env)
 {
 	int i;
+	pthread_t *threads;
+	pthread_t monitor;
 	i = 0;
 	
+	threads = (pthread_t *)malloc(sizeof(pthread_t) * env->number);
+	if (!threads)
+		return;
+	pthread_create(&monitor, NULL, ft_monitor, env);
 	while (i < env->number)
 	{
-		pthread_create(&env->philo[i].thread, NULL, ft_philo, &env->philo[i]);
-		// pthread_detach(env->philo[i].thread);
+		pthread_create(&threads[i], NULL, ft_philo, &env->philo[i]);
 		i++;
 	}
 	i = 0;
 	while(i < env->number)
 	{
-		pthread_join(env->philo[i].thread, NULL);
+		pthread_join(threads[i], NULL);
 		i++;
 	}
-	// while (1)
-	// {
-	// 	// if some one is died 
-	// 	// all have eaten == times_to_eat_each
-	// 	while(i < env->number)
-	// 	{
-	// 		if(is_died(env->philo[i]))
-				
-	// 	}
-
-		
-	// 	i++;
-	// 	if (i == philo->env->number)
-	// 		i = 0;		
-	// }
+	pthread_join(monitor, NULL);
+	free(threads);
 }
 
 int main(int argc, char **argv)
@@ -135,3 +141,31 @@ int main(int argc, char **argv)
 	simulation(env);
 	return(0);
 }
+
+
+	// while(philo->meals < philo->env->times_to_eat_each || philo->env->times_to_eat_each == -1)
+	// // while(1)
+	// {
+	// 	printf("id philo %d", philo->id);
+	// 	printf("fork");
+	// 	printf("philo %d wants %p\n", philo->id, philo->left);
+	// 	pthread_mutex_lock(philo->left);
+	// 	print_info(philo, "has taken a fork");
+	// 	printf("philo %d wants %p\n", philo->id, philo->right);
+	// 	pthread_mutex_lock (philo->right);
+	// 	print_info(philo, "has taken a fork");
+	// 	philo->last_eating = get_time();
+	// 	print_info(philo, "is eating");
+	// 	printf("eat-time %d\n", philo->env->time_to_eat);
+	// 	ft_usleep(philo->env->time_to_eat);
+	// 	printf("eat-time %d\n", philo->env->time_to_eat);
+		
+	// 	printf("philo %d down %p\n", philo->id, philo->left);
+	// 	pthread_mutex_unlock(philo->left);
+	// 	printf("philo %d down %p\n", philo->id, philo->right);
+	// 	pthread_mutex_unlock (philo->right);
+	// 	print_info(philo, "is sleeping");
+	// 	ft_usleep(philo->env->time_to_sleep);
+	// 	print_info(philo, "is sleeping");
+	// 	philo->meals++;
+	// }

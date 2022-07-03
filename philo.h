@@ -28,6 +28,7 @@ typedef struct s_philo
 {
 	int id;
 	int meals;
+	int signal;
 	pthread_t thread;
 	// t_mutex fork;
 	t_mutex *right;

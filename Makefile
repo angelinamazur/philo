@@ -8,17 +8,17 @@ OBJS = ${SRCS:%.c=%.o}
 
 CC = gcc
 
-CFLAGS = -Wall -Wextra -Werror -I$(HEADER)
+CFLAGS = -Wall -Wextra -Werror -I$(HEADER) -g -fsanitize=thread
 
 .PHONY : all clean fclean re
 
 all : $(NAME)
 
-$(NAME):	$(OBJS) $(HEADER)
-			$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+$(NAME):	$(OBJS) $(HEADER) 
+			$(CC) $(CFLAGS) $(OBJS) -o $(NAME) 
 
-%.o: %.c
-	$(CC) -Wall -Wextra -Werror -Imlx -c $< -o $@
+%.o: %.c $(HEADER) Makefile
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
 	@rm -f ${OBJS}

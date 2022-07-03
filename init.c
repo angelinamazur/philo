@@ -6,19 +6,11 @@
 /*   By: ptoshiko <ptoshiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 14:41:47 by ptoshiko          #+#    #+#             */
-/*   Updated: 2022/07/02 21:12:15 by ptoshiko         ###   ########.fr       */
+/*   Updated: 2022/07/03 19:00:33 by ptoshiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-// unsigned long get_time(void)
-// {
-// 	struct timeval	tv;
-
-// 	gettimeofday(&tv, NULL);
-// 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
-// }
 
 int env_init(t_env *env, int argc, char **argv)
 {
@@ -28,7 +20,6 @@ int env_init(t_env *env, int argc, char **argv)
 	if (argc == 5 || argc == 6)
 	{
 		env->start_time = get_time();
-		printf("official time %lu", env->start_time);
 		env->number = ft_atoi(argv[1]);
 		env->time_to_die = ft_atoi(argv[2]);
 		env->time_to_eat = ft_atoi(argv[3]);
@@ -36,6 +27,8 @@ int env_init(t_env *env, int argc, char **argv)
 		env->times_to_eat_each = -1;
 		pthread_mutex_init(&env->mute_print, NULL);
 		env->fork = (t_mutex *)malloc(sizeof(t_mutex) * env->number);
+		if(!env->fork)
+			return (0);
 		while(i < env->number)
 		{
 			pthread_mutex_init(&env->fork[i], NULL);
@@ -57,12 +50,12 @@ t_philo *philos_init(t_env *env)
 	i = 0;
 	while (i < env->number)
 	{
+		
 		env->philo[i].env = env;
+		env->philo[i].last_eating = env->start_time;
+		env->philo[i].signal = 0;
 		env->philo[i].id = i + 1;
 		env->philo[i].meals = 0;
-		// pthread_mutex_init(&env->philo[i].fork, NULL);
-		// env->philo[i].right = &env->philo[i].fork;
-		// env->philo[i].left = env->philo[i + 1].right;
 		if (i + 1 == env->number)
 		{
 			env->philo[i].right = &env->fork[i];
