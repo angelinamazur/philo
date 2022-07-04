@@ -6,7 +6,7 @@
 /*   By: ptoshiko <ptoshiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 14:41:47 by ptoshiko          #+#    #+#             */
-/*   Updated: 2022/07/03 19:00:33 by ptoshiko         ###   ########.fr       */
+/*   Updated: 2022/07/04 22:24:27 by ptoshiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,14 @@ int env_init(t_env *env, int argc, char **argv)
 		env->time_to_sleep = ft_atoi(argv[4]);
 		env->times_to_eat_each = -1;
 		pthread_mutex_init(&env->mute_print, NULL);
+		pthread_mutex_init(&env->mute_last_eating, NULL);
+		pthread_mutex_init(&env->mute_signal, NULL);
 		env->fork = (t_mutex *)malloc(sizeof(t_mutex) * env->number);
 		if(!env->fork)
 			return (0);
+		env->philo = (t_philo *)malloc(sizeof(t_philo) * env->number);
+		if(!env->philo)
+			return(0);
 		while(i < env->number)
 		{
 			pthread_mutex_init(&env->fork[i], NULL);
@@ -70,36 +75,3 @@ t_philo *philos_init(t_env *env)
 	}
 	return (env->philo);
 }
-
-
-// t_philo *philos_init(t_env *env)
-// {
-	
-// 	// t_philo *philo;
-// 	int i;
-	 
-// 	// philo = (t_philo *)malloc(sizeof(t_philo) * env->number);
-// 	// if(!philo)
-// 	// 	return(0);
-// 	i = 0;
-// 	while (i < env->number)
-// 	{
-// 		env->philo[i].id = i + 1;
-// 		// pthread_mutex_init(&philo[i].fork, NULL);
-// 		// philo[i].rigth = &philo[i].fork;
-// 		// philo[i].left = philo[i + 1].rigth;
-// 		i++;
-// 	}
-// 	return (env->philo);
-// }
-
-// void forks_init(t_env *env)
-// {
-// 	int i;
-	
-// 	env->forks = (pthread_mutex_t *) malloc (sieof(pthread_mutex_t) * env->number);
-// 	if (!env->forks)
-// 		return(0);
-	
-// }
-// philo->env.time_to_die

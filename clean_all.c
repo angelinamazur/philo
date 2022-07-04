@@ -1,21 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_get_time.c                                      :+:      :+:    :+:   */
+/*   clean_all.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ptoshiko <ptoshiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/30 22:30:09 by ptoshiko          #+#    #+#             */
-/*   Updated: 2022/06/30 22:30:22 by ptoshiko         ###   ########.fr       */
+/*   Created: 2022/07/04 22:18:56 by ptoshiko          #+#    #+#             */
+/*   Updated: 2022/07/04 22:24:44 by ptoshiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-unsigned long get_time(void)
+void clean_all(t_env *env)
 {
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+	free(env->fork);
+	free(env->philo);
+	free(env);
 }

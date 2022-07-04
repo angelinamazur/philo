@@ -19,6 +19,8 @@ typedef struct s_env
 	int time_to_sleep;
 	int times_to_eat_each;
 	t_mutex mute_print;
+	t_mutex mute_last_eating;
+	t_mutex mute_signal;
 	t_mutex *fork;
 	t_philo *philo;
 
@@ -30,7 +32,6 @@ typedef struct s_philo
 	int meals;
 	int signal;
 	pthread_t thread;
-	// t_mutex fork;
 	t_mutex *right;
 	t_mutex *left;
 	unsigned long last_eating;
@@ -72,5 +73,7 @@ int env_init(t_env *env, int argc, char **argv);
 int	ft_atoi(const char *str);
 unsigned long get_time(void);
 void print_info(t_philo *philo, char *msg);
+void clean_all(t_env *env);
+void	ft_usleep(int time_to_wait);
 
 #endif
