@@ -8,7 +8,7 @@ OBJS = ${SRCS:%.c=%.o}
 
 CC = gcc
 
-CFLAGS = -Wall -Wextra -Werror -I$(HEADER) #-g -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -I$(HEADER) -g -fsanitize=thread
 
 .PHONY : all clean fclean re
 

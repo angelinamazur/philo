@@ -6,7 +6,7 @@
 /*   By: ptoshiko <ptoshiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/30 15:36:26 by ptoshiko          #+#    #+#             */
-/*   Updated: 2022/07/04 22:38:03 by ptoshiko         ###   ########.fr       */
+/*   Updated: 2022/07/05 19:04:52 by ptoshiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,37 +27,30 @@ void *ft_philo(void *data) // pointer to one elem
 	philo = (t_philo *)data;
 	if (philo->id % 2 == 1)
 		ft_usleep(50);
-		
-	while(philo->meals < philo->env->times_to_eat_each || philo->env->times_to_eat_each == -1)
+	pthread_mutex_lock(&philo->env->mute_signal);
+	while((philo->meals < philo->env->times_to_eat_each && !philo->signal)|| (philo->env->times_to_eat_each == -1 && !philo->signal))
 	{
+		pthread_mutex_unlock(&philo->env->mute_signal);
 		pthread_mutex_lock(philo->left);
-		// if (philo->signal == 1)
-		// 	return 0;
 		print_info(philo, "has taken a fork");
 		if (philo->env->number == 1)
 			return (NULL);
 		pthread_mutex_lock (philo->right);
-		// if (philo->signal == 1)
-		// 	return 0;
 		print_info(philo, "has taken a fork");
 		pthread_mutex_lock(&philo->env->mute_last_eating); 
 		philo->last_eating = get_time();
 		pthread_mutex_unlock(&philo->env->mute_last_eating); 
-		// if (philo->signal == 1)
-		// 	return 0;
 		print_info(philo, "is eating");
 		ft_usleep(philo->env->time_to_eat);
 		pthread_mutex_unlock(philo->left);
 		pthread_mutex_unlock (philo->right);
-		// if (philo->signal == 1) // 1
-		// 	return 0;
 		print_info(philo, "is sleeping");
 		ft_usleep(philo->env->time_to_sleep);
-		// if (philo->signal == 1) // 1
-		// 	return 0;
-		print_info(philo, "is sleeping");
+		print_info(philo, "is thinking");
 		philo->meals++;
+		pthread_mutex_lock(&philo->env->mute_signal);
 	}
+	pthread_mutex_unlock(&philo->env->mute_signal);
 	return (NULL);
 }
 
@@ -72,7 +65,7 @@ void * ft_monitor (void *data)
 	while (1)
 	{
 		// if (env->times_to_eat_each > 0 && env->philo[i].meals >= env->times_to_eat_each))
-			
+		// ft_usleep(10);	
 		pthread_mutex_lock(&env->mute_last_eating); 
 		if(env->philo[i].last_eating && get_time() - env->philo[i].last_eating > (unsigned long)env->time_to_die)
 		{
@@ -105,17 +98,20 @@ void simulation(t_env *env)
 	threads = (pthread_t *)malloc(sizeof(pthread_t) * env->number);
 	if (!threads)
 		return;
-	pthread_create(&monitor, NULL, ft_monitor, env);
+	
 	while (i < env->number)
 	{
 		pthread_create(&threads[i], NULL, ft_philo, &env->philo[i]);
 		i++;
 	}
+	pthread_create(&monitor, NULL, ft_monitor, env);
+	// check here 
+	
 	i = 0;
 	pthread_join(monitor, NULL);
 	while(i < env->number)
 	{
-		pthread_detach(threads[i]);
+		pthread_join(threads[i], NULL);
 		i++;
 	}
 	free(threads);

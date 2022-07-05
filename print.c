@@ -6,7 +6,7 @@
 /*   By: ptoshiko <ptoshiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 16:50:11 by ptoshiko          #+#    #+#             */
-/*   Updated: 2022/07/04 22:14:32 by ptoshiko         ###   ########.fr       */
+/*   Updated: 2022/07/05 18:57:22 by ptoshiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,14 @@
 
 void print_info(t_philo *philo, char *msg)
 {
-	pthread_mutex_lock(&philo->env->mute_print);
-	printf("%lu %d %s\n", get_time() - philo->env->start_time, philo->id, msg);	
-	pthread_mutex_unlock(&philo->env->mute_print);
+	pthread_mutex_lock(&philo->env->mute_signal);
+	if (!philo->signal)
+	{
+		pthread_mutex_lock(&philo->env->mute_print);
+		printf("%lu %d %s\n", get_time() - philo->env->start_time, philo->id, msg);	
+		pthread_mutex_unlock(&philo->env->mute_print);
+	}
+	pthread_mutex_unlock(&philo->env->mute_signal);
 }
 
 // int print_info(t_philo *philo, char *msg)
