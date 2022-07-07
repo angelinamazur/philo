@@ -6,13 +6,13 @@
 /*   By: ptoshiko <ptoshiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/30 22:30:09 by ptoshiko          #+#    #+#             */
-/*   Updated: 2022/07/04 22:37:54 by ptoshiko         ###   ########.fr       */
+/*   Updated: 2022/07/07 18:50:27 by ptoshiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-unsigned long get_time(void)
+unsigned long	get_time(void)
 {
 	struct timeval	tv;
 
@@ -28,4 +28,3 @@ void	ft_usleep(int time_to_wait)
 	while (get_time() < time + (unsigned long)time_to_wait)
 		usleep(100);
 }
-

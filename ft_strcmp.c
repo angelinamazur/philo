@@ -1,20 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clean_all.c                                        :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ptoshiko <ptoshiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/04 22:18:56 by ptoshiko          #+#    #+#             */
-/*   Updated: 2022/07/06 18:41:02 by ptoshiko         ###   ########.fr       */
+/*   Created: 2022/07/07 20:29:02 by ptoshiko          #+#    #+#             */
+/*   Updated: 2022/07/07 20:29:28 by ptoshiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	clean_all(t_env *env)
+int	ft_strcmp(char *s1, char *s2)
 {
-	free(env->fork);
-	free(env->philo);
-	free(env);
+	int	i;
+
+	i = 0;
+	while (s1[i] == s2[i] && s1[i] != '\0' && s2[i] != '\0')
+		i++;
+	return (s1[i] - s2[i]);
 }

@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clean_all.c                                        :+:      :+:    :+:   */
+/*   ft_isdigit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ptoshiko <ptoshiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/04 22:18:56 by ptoshiko          #+#    #+#             */
-/*   Updated: 2022/07/06 18:41:02 by ptoshiko         ###   ########.fr       */
+/*   Created: 2021/10/14 21:45:17 by ptoshiko          #+#    #+#             */
+/*   Updated: 2022/02/18 20:32:13 by ptoshiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
-
-void	clean_all(t_env *env)
+int	ft_isdigit(int c)
 {
-	free(env->fork);
-	free(env->philo);
-	free(env);
+	if (c >= '0' && c <= '9')
+		return (1);
+	else
+		return (0);
 }

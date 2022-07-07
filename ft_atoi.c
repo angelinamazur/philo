@@ -6,15 +6,15 @@
 /*   By: ptoshiko <ptoshiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/16 23:13:18 by ptoshiko          #+#    #+#             */
-/*   Updated: 2022/04/14 21:46:02 by ptoshiko         ###   ########.fr       */
+/*   Updated: 2022/07/07 19:42:48 by ptoshiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_atoi(const char *str)
+long long	ft_atoi(const char *str)
 {
 	int			i;
 	int			sign;
-	long int	res;
+	long long	res;
 
 	i = 0;
 	sign = 1;
